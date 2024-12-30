@@ -1,0 +1,75 @@
+---
+- name: Cac cach bieu dien variable
+  hosts: localhost
+  vars:
+    # Key-value Variable
+    Ten: Nguyen van huan
+
+    # List Variable
+    packages:
+      - nginx
+      - apache2
+      - git 
+
+    # Dictionary Variable
+    ufw:
+      rule: allow
+      port: 80
+      proto: tcp
+  tasks:
+    - name: Key-value Variable
+      ansible.builtin.debug:
+        msg: "Key-value Variable is {{ Ten }}"
+
+    - name: List Variable
+      ansible.builtin.debug:
+        msg: "List Variable is {{ packages[0] }}"
+        
+    - name: Dictionary Variable
+      ansible.builtin.debug:
+        msg: "Dictionary Variable is {{ ufw['port'] }}"
+
+- name: Cac noi dat Variable
+  hosts: localhost
+  vars:
+    var_play: hello
+    override_var: 81
+  vars_files:
+    - varfile.yaml
+  
+  tasks:
+    - name: Variable in Inventory
+      ansible.builtin.debug:
+        msg: "Variable in Inventory is {{ http_port }}"
+
+    - name: Variable in play
+      ansible.builtin.debug:
+        msg: "Variable in play is {{ var_play }}"
+    
+    - name: Variable in tasks
+      vars:
+        var_task: hi
+      ansible.builtin.debug:
+        msg: "Variable in task is {{ var_task }}"
+
+    - name: Variable in File
+      ansible.builtin.debug:
+        msg: "Variable in File:  {{ simple_variable }}"
+
+    # - name: Variable in Runtime
+    #   ansible.builtin.debug:
+    #     msg: "Variable in Runtime:  {{ var_runtime }}"
+
+    - name: Do uu tien cua Variable
+      ansible.builtin.debug:
+        msg: "Do uu tien cua bien sau ghi de:  {{ override_var }}"
+
+
+        # Register Variable
+    - name: Get current OS version
+      command: cat /etc/os-release
+      register: OS_version
+
+    - name: Display the OS version
+      debug:
+        var: OS_version

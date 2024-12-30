@@ -1,0 +1,55 @@
+---
+# 1. Cách tra tài liệu Handler
+# 2. Cách khai báo và sử dụng Handler
+- name: Cài đặt và cấu hình Web Server
+  hosts: web
+  become: true
+  gather_facts: false
+  tasks:
+   # Task 1: Cài đặt nhiều gói cần thiết (sử dụng loop)
+    - name: Cài đặt các gói phần mềm cần thiết
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - apache2
+        - curl
+        - unzip
+        - vim
+
+    # Task 2: Tạo nhiều file cấu hình (sử dụng loop thay cho with_file)
+
+    - name: Tạo các file cấu hình cho từng virtual host
+      copy:
+        dest: "/etc/apache2/sites-available/{{ item }}"
+        content: "{{ lookup('ansible.builtin.file', item) }}"
+      loop:
+        - site1.conf
+        - site2.conf
+        - site3.conf
+
+    # Task 3: Kích hoạt các virtual host (Sử dụng with_items)
+    - name: Kích hoạt từng virtual host
+      command: a2ensite {{ item }}.conf
+      with_items:
+        - site1
+        - site2
+        - site3
+      notify: Restart Apache
+
+  #   # Task 4: Đảm bảo Apache đang chạy (sử dụng until)
+    - name: Kiểm tra Apache đang chạy
+      service:
+        name: apache2
+        state: started
+      register: apache_status
+      until: apache_status is succeeded
+      retries: 5
+      delay: 10
+
+  handlers:
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted

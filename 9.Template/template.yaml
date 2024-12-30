@@ -1,0 +1,50 @@
+---
+# 1. Cách tra tài liệu
+# 2. Cách sử dụng Template
+# 3. Jinja2 - Cú pháp template
+#     Sử dụng biến
+#     Vòng lặp
+#     Điều kiện
+#     Bộ lọc
+
+
+- name: Cài đặt web server
+  hosts: db
+  become: yes
+  vars:
+    nginx_port: 80
+    nginx_server_name: "{{ ansible_hostname | default('localhost') }}"
+    site_title: "Welcome to Ansible"
+    welcome_message: "This is managed by Ansible automation."
+    users:
+      - name: admin
+        role: superuser
+      - name: user1
+        role: editor
+      - name: user2
+        role: viewer
+  tasks:
+    # Task 1: Cài đặt Nginx
+    - name: Cài đặt Nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    # Task 2: Sao chép file cấu hình
+    - name: Sao chép file cấu hình
+      ansible.builtin.template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+      notify: Restart Nginx
+
+    # Task 3: Sao chép file index.html
+    - name: Sao chép file index.html
+      ansible.builtin.template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+
+  handlers:
+    - name: Restart Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted

@@ -1,0 +1,68 @@
+---
+##########################
+# Facts 
+# - name: Facts Variables
+#   hosts: db
+#   gather_facts: false
+#   tasks:
+#     - name: Print all available facts
+#       ansible.builtin.debug:
+#         var: ansible_facts
+
+#     - name: Get IPv4
+#       ansible.builtin.debug:
+#         var: ansible_facts.all_ipv4_addresses
+
+#     - name: Get Block Size 
+#       ansible.builtin.debug:
+#         var: ansible_facts.mounts[0].block_size
+
+#     - name: Get IPv4 Version 2
+#       ansible.builtin.debug:
+#         var: ansible_all_ipv4_addresses
+
+#     - name: Get IPv4 Version 3
+#       ansible.builtin.setup:
+#         filter:
+#           - ansible_all_ipv4_addresses
+
+#     - name: In IPv4 Version 3
+#       ansible.builtin.debug:
+#         var: ansible_all_ipv4_addresses
+
+##########################
+# Magic Variables
+
+- name: Magic Variables
+  hosts: db
+  gather_facts: false
+  tasks: 
+    # Hostvars
+    - name: Print Hostvars
+      ansible.builtin.debug:
+        var: hostvars.db1.ansible_become_pass
+
+    # groups 
+    - name: Print groups
+      ansible.builtin.debug:
+        var: groups.web
+
+    # group name
+    - name: Print group name
+      ansible.builtin.debug:
+        var: group_names
+
+    # inventory hostname 
+    - name: Print hostname
+      ansible.builtin.debug:
+        var: inventory_hostname
+
+##########################
+# Connection Variables
+
+- name: Connection Variables
+  hosts: db
+  tasks:
+    - name: Get User name 
+      ansible.builtin.debug:
+        var: ansible_user

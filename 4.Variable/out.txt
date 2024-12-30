@@ -1,0 +1,13 @@
+    "ansible_facts": {
+        "ansible_all_ipv4_addresses": [
+            "192.168.1.6"
+        ],
+
+ok: [db1] => {
+    "ansible_facts": {
+        "all_ipv4_addresses": [
+            "192.168.1.6"
+        ],
+
+ansible_facts.all_ipv4_addresses -> 192.168.1.6
+ansible_all_ipv4_addresses -> 192.168.1.6

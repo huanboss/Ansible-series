@@ -1,0 +1,82 @@
+---
+# 1. Basis conditional
+#          logic 
+#           ==, != , >=
+#           and, or, not, in , is
+# 2. Debug 
+# 3. Facts 
+
+- name: Cai dat docker
+  hosts: db1
+  become: true
+  tasks:
+    # Task 1: Kiem tra host trong group docker
+    - name: Kiem tra host
+      when: "'docker' in group_names"
+      ansible.builtin.debug:
+        msg: "Host trong group docker"
+
+    # Task 2: Kiem tra cau hinh he thong truoc khi cai
+    - name: Kiem tra cau hinh he thong
+      when: 
+        - ansible_facts.processor_cores >= 1 
+        - ansible_facts.memtotal_mb >= 1024
+      ansible.builtin.debug:
+        msg: >
+          Host {{ inventory_hostname }} du dieu kien cai docker
+          - CPU {{ ansible_facts.processor_cores }} cores 
+          - RAM {{ ansible_facts.memtotal_mb }} MB
+
+    # Task 3: Update Ubuntu
+    - name: Update Ubuntu
+      ansible.builtin.apt:
+        update_cache: yes
+      when: ansible_facts['distribution'] == "Ubuntu"
+
+    # Task 4: Install cer ,curl
+    - name:
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+        state: present
+    
+    # Task 5: Them docker gpg key
+    - name: Them docker gpg key
+      ansible.builtin.command:
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    # Task 6: Them Docker repo
+    - name: Them Docker repo
+      ansible.builtin.command:
+        echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_facts['distribution_version'] }} stable"
+
+    
+    # Task 7: Cai dat Docker
+    - name: Cai dat docker
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+
+    # Task 8: Check version docker
+    - name: Check version Docker
+      ansible.builtin.command:
+        docker --version
+      register: docker_check
+
+    # Task 9: In thong bao docker cai dat thanh cong 
+    - name: In thong bao docker cai dat thanh cong
+      ansible.builtin.debug:
+        msg: "Docker da cai dat: {{ docker_check.stdout }}"
+      when: docker_check.rc == 0
+
+    # Task 10: In thong bao neu docker khong cai thanh cong
+    - name: In thong bao neu docker khong cai thanh cong
+      ansible.builtin.debug:
+        msg: "Docker khong cai dat thanh cong"
+      when: docker_check.rc != 0

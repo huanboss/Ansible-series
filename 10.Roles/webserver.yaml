@@ -1,0 +1,14 @@
+---
+# 1. Tạo 1 role với cấu trúc tiêu chuẩn
+# 2. Các thành phần trong role
+# 3. Tra tài liệu về Role
+
+- name: Cài đặt web server
+  hosts: web
+  become: yes
+  tasks:
+  roles:
+    - webserver
+
+
+

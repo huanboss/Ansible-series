@@ -1,0 +1,65 @@
+---
+# 1.  Sử dụng loop
+#       List
+#       list of dict
+#       Dictionary
+#       Conditional
+# 2.  With_X
+# 3.  Until
+# 4.  Migrating with_X to loop
+
+# - name: Loops
+#   hosts: web
+#   become: true
+#   gather_facts: false
+#   tasks:
+#     # 1. List
+#     - name: Add several users
+#       ansible.builtin.user:
+#         name: "{{ item }}"
+#         state: present
+#       #  groups: "wheel"
+#       loop:
+#         - testuser1
+#         - testuser2
+#     # 2. List of Dictionary
+#     - name: Add several users v2
+#       ansible.builtin.user:
+#         name: "{{ item.name }}"
+#         uid: "{{ item.uid }}"
+#         state: present
+#       #  groups: "wheel"
+#       loop:
+#         - { name: user03, uid: 1020 }
+#         - { name: user04, uid: 1021 }
+
+#     # Dictionary
+#     - name: Using dict2items
+#       ansible.builtin.debug:
+#         msg: "{{ item.key }} - {{ item.value }}"
+#        # var: item
+#       loop: "{{ tag_data | dict2items }}"
+#       vars:
+#         tag_data:
+#           Environment: dev
+#           Application: payment
+#       when: ansible_facts.processor_cores >= 1
+
+- name: With_X
+  hosts: web
+  tasks:
+    - name: "loop through list"
+      ansible.builtin.debug:
+        msg: "An item: {{ item }}"
+      with_items:
+        - 1
+        - 2
+        - 3
+
+    - name: display multiple file contents
+      ansible.builtin.debug: var=item
+      with_file:
+        - "site1.conf"
+ #       - "bar.txt"  # will be looked in files/ dir relative to play or in role
+        - "site2.conf"
+    

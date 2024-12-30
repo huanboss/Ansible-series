@@ -1,0 +1,40 @@
+---
+- name: Install and configure Apache HTTP Server on Ubuntu 22.04
+  hosts: server1
+  become: yes  # Run tasks as a privileged user
+  tasks:
+    - name: Update the APT package index
+      apt:
+        update_cache: yes
+
+    - name: Install Apache HTTP Server 
+      apt:
+        name: apache2
+        state: present
+
+    - name: Ensure Apache HTTP Server is running and enabled at startup
+      service:
+        enabled: yes
+        name: apache2
+        state: started
+        
+
+    - name: Create a custom index.html file
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <head>
+              <title>Welcome to Apache on Ubuntu 22.04</title>
+          </head>
+          <body>
+              <h1>Hello from Ansible!</h1>
+              <p>This page is served by Apache HTTP Server.</p>
+          </body>
+          </html>
+
+    - name: Open firewall for HTTP (port 80)
+      ufw:
+        rule: allow
+        port: 80
+        proto: tcp
