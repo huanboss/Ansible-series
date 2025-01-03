@@ -1,4 +1,6 @@
 ---
+##########################
+
 - name: Install and configure Apache HTTP Server on Ubuntu 22.04
   hosts: server1
   become: yes  # Run tasks as a privileged user

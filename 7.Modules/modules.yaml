@@ -20,53 +20,53 @@
   become: true
   gather_facts: false
   tasks:
-    # 2.1 Module quản lý gói và dịch vụ
-    # - name: Install apache httpd  (state=present is optional)
-    #   ansible.builtin.apt:
-    #     name: apache2
-    #     state: present
-    # - name: Remove apache package
-    #   ansible.builtin.apt:
-    #     name: apache2
-    #     state: absent
+   # 2.1 Module quản lý gói và dịch vụ
+    - name: Install apache httpd  (state=present is optional)
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+    - name: Remove apache package
+      ansible.builtin.apt:
+        name: apache2
+        state: absent
 
-    # - name: Restart apache
-    #   ansible.builtin.service:
-    #     name: apache2
-    #     state: stopped
+    - name: Restart apache
+      ansible.builtin.service:
+        name: apache2
+        state: stopped
 
-    # 2.2 Module quản lý hệ thống
-    # - name: add user
-    #   ansible.builtin.user:
-    #     name: "{{ item.name }}"
-    #     uid: "{{ item.uid }}"
-    #     state: present
+   # 2.2 Module quản lý hệ thống
+    - name: add user
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        uid: "{{ item.uid }}"
+        state: present
     
-    # - name: command 
-    #   ansible.builtin.command:
-    #     cat /etc/os-release
-    #   register: os_version
+    - name: command 
+      ansible.builtin.command:
+        cat /etc/os-release
+      register: os_version
 
-    # - name: shell
-    #   ansible.builtin.shell:
-    #     cat /etc/hosts
-    #   register: host_file
+    - name: shell
+      ansible.builtin.shell:
+        cat /etc/hosts
+      register: host_file
 
-    # 3. Module Debug
-    # - name: Module Debug
-    #   ansible.builtin.debug: 
-    #     msg: "Ket qua cua command cat /etc/hosts: {{ os_version }}"
+   # 3. Module Debug
+    - name: Module Debug
+      ansible.builtin.debug: 
+        msg: "Ket qua cua command cat /etc/hosts: {{ os_version }}"
 
-    # - name: Module debug ver2
-    #   ansible.builtin.debug:
-    #     var: host_file
+    - name: Module debug ver2
+      ansible.builtin.debug:
+        var: host_file
 
-    # 4. Module quản lý file
-    # - name: Create a directory if it does not exist
-    #   ansible.builtin.file:
-    #     path: /etc/some_directory
-    #     state: directory
-    #     mode: '0755'
+   # 4. Module quản lý file
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: /etc/some_directory
+        state: directory
+        mode: '0755'
 
     - name: Copy file with owner and permissions
       ansible.builtin.copy:

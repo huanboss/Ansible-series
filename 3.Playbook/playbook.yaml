@@ -1,103 +1,81 @@
 ---
-# - name: Install and configure Apache HTTP Server on Ubuntu 22.04
-#   hosts: web
-#   become: yes  # Run tasks as a privileged user
-#   tasks:
-#     - name: Update the APT package index
-#       #command : apt update 
+
+# - name: Mô tả tác vụ
+#   module_name:
+#     parameter1: value1
+#     parameter2: value2  ansible webservers -m service -a "name=httpd state=started"
+# 
+#     - name: Install Apache HTTP Server 
 #       apt:
-#         update_cache: yes
-
-- name: Mô tả tác vụ
-  module_name:
-    parameter1: value1
-    parameter2: value2  ansible webservers -m service -a "name=httpd state=started"
-
-
-
-    - name: Install Apache HTTP Server 
-      apt:
-        name: apache2
-        state: present
-
-    - name: Remove Apache HTTP Server
-      apt:
-        name: apache2
-        state: absent   
-
-
-#     - name: Ensure Apache HTTP Server is running and enabled at startup
-#       service:
-#         enabled: yes
 #         name: apache2
-#         state: started
-#       register: test
-#     - name: Display the kernel version
-#       debug:
-#         var: test
-#         #msg: "Kernel version is: {{ kernel_version.stdout_lines }}"
-#     - name: Create a custom index.html file
-#       copy:
-#         dest: /var/www/html/index.html
-#         content: |
-#           <html>
-#           <head>
-#               <title>Welcome to Apache on Ubuntu 22.04</title>
-#           </head>
-#           <body>
-#               <h1>Hello from Ansible!</h1>
-#               <p>This page is served by Apache HTTP Server.</p>
-#           </body>
-#           </html>
+#         state: present
 
-#     - name: Open firewall for HTTP (port 80)
-#       ufw:
-#         rule: allow
-#         port: 80
-#         proto: tcp
+#     - name: Remove Apache HTTP Server
+#       apt:
+#         name: apache2
+#         state: absent   
+
+
+- name: Install and configure Apache HTTP Server on Ubuntu 22.04
+  hosts: web
+  become: yes  # Run tasks as a privileged user
+  tasks:
+    - name: Update the APT package index
+      #command : apt update 
+      apt:
+        update_cache: yes
+    - name: Ensure Apache HTTP Server is running and enabled at startup
+      service:
+        enabled: yes
+        name: apache2
+        state: started
+      register: test
+    - name: Display the kernel version
+      debug:
+        var: test
+        #msg: "Kernel version is: {{ kernel_version.stdout_lines }}"
+    - name: Create a custom index.html file
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <head>
+              <title>Welcome to Apache on Ubuntu 22.04</title>
+          </head>
+          <body>
+              <h1>Hello from Ansible!</h1>
+              <p>This page is served by Apache HTTP Server.</p>
+          </body>
+          </html>
+
+    - name: Open firewall for HTTP (port 80)
+      ufw:
+        rule: allow
+        port: 80
+        proto: tcp
+
+#################################################################
 
 - name: Install mysql in Ubuntu 22.04
   hosts: db
   become: yes 
   tasks:
-    # - name: Update the APT package index
-    #   #command : apt update 
-    #   apt:
-    #     update_cache: yes
+    - name: Update the APT package index
+      #command : apt update 
+      apt:
+        update_cache: yes
     
-    # - name: Upgrade the OS (apt-get dist-upgrade)
-    #   ansible.builtin.apt:
-    #     upgrade: dist
+    - name: Upgrade the OS (apt-get dist-upgrade)
+      ansible.builtin.apt:
+        upgrade: dist
 
-    # - name: Install Mysql Server 
-    #   apt:
-    #     name: mysql-server
-    #     state: present
+    - name: Install Mysql Server 
+      apt:
+        name: mysql-server
+        state: present
     
-    # - name: Ensure mysql Server is running and enabled at startup
-    #   service:
-    #     enabled: yes
-    #     name: mysql
-    #     state: started
-    - name: Get current kernel version
-      command: df -h
-      register: kernel_version
-
-    - name: Display the kernel version
-      debug:
-       # var: test
-        msg: "Kernel version is: {{ kernel_version.stdout_lines }}"
-
-- name: Cài đặt gói nếu hệ điều hành là Debian
-  ansible.builtin.package:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - nginx
-    - apache2
-  when: ansible_facts['os_family'] == 'Debian'
-
-- name: Sử dụng template để tạo file
-  ansible.builtin.template:
-    src: /path/to/template.j2
-    dest: /path/to/destination/file
+    - name: Ensure mysql Server is running and enabled at startup
+      service:
+        enabled: yes
+        name: mysql
+        state: started
